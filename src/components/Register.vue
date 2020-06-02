@@ -1,7 +1,7 @@
 <template>
 	<div class="login_container">
 		<el-card body-style="padding : 0" shadow="hover">
-			<el-form ref="loginFormRef" :model="registerForm" :rules="registerFormRules"  class="login_form" label-width="80px">
+			<el-form ref="registerFormRef" :model="registerForm" :rules="registerFormRules"  class="login_form" label-width="80px">
 				<!-- 用户名 -->
 				<el-form-item label="账号" prop="userName">
 					<el-input v-model="registerForm.userName" prefix-icon="el-icon-user" clearable ></el-input>
@@ -76,17 +76,28 @@
 			}
 		},
 		methods: {
-			login(){
-				this.$refs.loginFormRef.validate(async valid => {
-					if(!valid) return;
-					const { data:res } = await this.$http.post('loginByPassword',this.loginForm);
-					console.log(res)
-					this.$message.success('登录成功!');
-				})
-			},
 			register(){
-				this.$router.push('/register');
+				this.$refs.registerFormRef.validate(async valid => {
+					if(!valid) return;
+					// const { data:res } = await this.$http.post('user/register',{
+					// 		userName:this.registerForm.userName,
+					// 		password:this.registerForm.password
+					// })
+					const res = await this.$http.post('user/register',{
+							userName:this.registerForm.userName,
+							password:this.registerForm.password
+					})
+					console.log(res)
+					if(res.data.code !== 1000) 
+					    return this.$message.error('注册失败!');
+					// window.sessionStorage.setItem("token",res.data.token);
+					this.$message.success('注册成功!');
+					this.$router.push('/login');
+				})
 			}
+			// register(){
+			// 	this.$router.push('/register');
+			// }
 		}
 	}
 </script>

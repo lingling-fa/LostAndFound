@@ -6,9 +6,14 @@
 				<h2 class="card-title">
 					{{item.title}}
 				</h2>
-				<div class="card-content">
+				<div style="display: flex">
+				<div class="card-pic" v-if= "item.pic">
+					<img :src="item.pic"/>
+				</div>
+				<div class="card-content" >
 					{{item | flod }}
-					<a class="btn-pick-up" v-show=" item.context.length>= 111" @click.stop="togglePickUp(item)">{{item.isExpand?'收起':'...全文'}}</a>
+					<a class="btn-pick-up" v-show=" item.context.length>= 200" @click.stop="togglePickUp(item)">{{item.isExpand?'收起':'...全文'}}</a>
+				</div>
 				</div>
 				</div>
 				<div class="card-footer">
@@ -42,17 +47,19 @@
 			return {
 				commentList: [{
 						id: '0',
-						title: '蒋军成',
-						context: "据留言大神的分析，他们说镯子应该是翡翠冰种或者玻璃种，不是水晶。水晶没有那么贵。我解释一下因为我不知道水晶翡翠的区别也没有刻意了解过，只是当年记忆深刻这个非常贵，不是为了引起误解，至于到底这个镯子是什么材质的，有人还私信让我再去问问，其实没有必要了，只当是个美好的回忆和小故事就好了。这个故事有快15年了，那个14万差不多就是2006年的14万。所以当年能买什么我也说不准。",
+						title: '拼多多是怎么从拼夕夕变成拼爹爹的？为什么口碑会越来越好？',
+						context: "据留言大神的分析，他们说镯子应该是翡翠冰种或者玻璃种，不是水晶。水晶没有那么贵。我解释一下因为我不知道水晶翡翠的区别也没有刻意了解过，只是当年记忆深刻这个非常贵，不是为了引起误解，至于到底这个镯子是什么材质的，有人还私信让我再去问问，其实没有必要了，只当是个美好的回忆和小故事就好了。这个故事有快15年了，那个14万差不多就是2006年的14万。所以当年能买什么我也说不准其实没有必要了，只当是个美好的回忆和小故事就好了。这个故事有快15年了，那个14万差不多就是2006年的14万。所以当年能买什么我也说不准其实没有必要了，只当是个美好的回忆和小故事就好了。这个故事有快15年了，那个14万差不多就是2006年的14万。所以当年能买什么我也说不准。",
 						content: '',
+						pic:'http://112.74.103.3:80/seek_lost/static/image/user/2020/06/02/1591109499769617654.png',
 						isExpand: false,
 						like: 20
 					},
 					{
 						id: '1',
 						title: '赵成',
-						context: "根据留言大神的分析，他们说镯子应该是翡翠冰种或者玻璃种，不是水晶。水晶没有那么贵。我解释一下因为我不知道水晶翡翠的区别也没有刻意了解过，只是当年记忆深刻这个非常贵，不是为了引起误解，至于到底这个镯子是什么材质的，有人还私信让我再去问问，其实没有必要了，只当是个美好的回忆和小故事就好了。这个故事有快15年了，那个14万差不多就是2006年的14万。所以当年能买什么我也说不准。",
+						context: "根据留言大神的分析，他们说镯子应该是翡翠冰种或者玻璃种，不是水晶。水晶没有那么贵。我解释一下因为我不知道水晶翡翠的区别也没有刻意了解过，只是当年记忆深刻这个非常贵，不是为了引起误解，至于到底这个镯子是什么材质的，有人还私信让我再去问问，其实没有必要了，只当是个美好的回忆和小故事就好了。这个故事有快15年了，那个14万差不多就是2006年的14万。所以当年能买什么我也说不准。",	
 						isExpand: false,
+						pic:'',
 						like: 8
 					},
 					{
@@ -60,6 +67,7 @@
 						title: '赵成',
 						context: "根据留言大神的分析，他们说镯子应该是翡翠冰种或者玻璃种，不是水晶。水晶没有那么贵。我解释一下因为我不知道水晶翡翠的区别也没有刻意了解过，只是当年记忆深刻这个非常贵，不是为了引起误解，至于到底这个镯子是什么材质的，有人还私信让我再去问问，其实没有必要了，只当是个美好的回忆和小故事就好了。这个故事有快15年了，那个14万差不多就是2006年的14万。所以当年能买什么我也说不准。",
 						isExpand: false,
+						pic:'',
 						like: 8
 					}
 				],
@@ -69,8 +77,6 @@
 		},
 		methods: {
 			togglePickUp(item) {
-				// let target = e.target.parentNode; //点击后获取当前评论
-				// console.log(e.target.parentNode)
 				item.isExpand = !item.isExpand; //切换状态
 			},
 			contextFold(status) {
@@ -91,6 +97,21 @@
 </script>
 
 <style lang="less">
+	.btn-pick-up{
+		color: blue;
+	}
+	.card-pic{
+		flex: none;
+		height: 120px;
+		width: 150px;
+	}
+	.card-pic img{
+		width: 100%;
+		height: 100%;
+	}
+	.card-content{
+		flex: 1;
+	}
 	.card {
 		border-bottom: 1px solid #f0f2f7;
 	}

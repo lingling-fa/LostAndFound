@@ -27,8 +27,8 @@
 			return {
 				//登录表单的数据绑定
 				loginForm: {
-					user_name: 'admin',
-					password: '123456'
+					user_name: 'ls',
+					password: '777'
 				},
 				//验证输入是否合法
 				loginFormRules: {
@@ -36,25 +36,25 @@
 							required: true,
 							message: "请输入用户名",
 							trigger: "blur"
-						},
-						{
-							min: 3,
-							max: 10,
-							message: "长度在3到10个字符",
-							trigger: "blur"
 						}
+						// {
+						// 	min: 3,
+						// 	max: 10,
+						// 	message: "长度在3到10个字符",
+						// 	trigger: "blur"
+						// }
 					],
 					password: [{
 							required: true,
 							message: "请输入密码",
 							trigger: "blur"
-						},
-						{
-							min: 6,
-							max: 15,
-							message: "长度在6到15个字符",
-							trigger: "blur"
 						}
+						// {
+						// 	min: 6,
+						// 	max: 15,
+						// 	message: "长度在6到15个字符",
+						// 	trigger: "blur"
+						// }
 					]
 				}
 			}
@@ -63,10 +63,15 @@
 			login(){
 				this.$refs.loginFormRef.validate(async valid => {
 					if(!valid) return;
-					// const { data:res } = await this.$http.post('loginByPassword',this.loginForm);
-					// console.log(res)
+					const { data:res } = await this.$http.post('user/loginByPassword',this.loginForm);
+					console.log(res)
+					//登录失败后
+					if(res.code !== 1000) return this.$message.error(res.error)
+					//登录成功后
 					this.$message.success('登录成功!');
-					this.$router.push('/home');
+					window.sessionStorage.setItem("token",res.data.token)
+					window.sessionStorage.setItem("user_id",res.data.user_id)
+					this.$router.push('/firstPage');
 				})
 			},
 			register(){

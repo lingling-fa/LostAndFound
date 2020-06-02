@@ -7,7 +7,12 @@ import './assets/icon/iconfont.css'
 import axios from 'axios'
 
 Vue.prototype.$http = axios
-axios.defaults.baseURL = 'http://112.74.103.3:8080/seek_lost/api/user'
+axios.defaults.baseURL = 'http://112.74.103.3:8080/seek_lost/api'
+axios.withCredentials = false,
+axios.interceptors.request.use(config => {
+	config.headers.token = window.sessionStorage.getItem('token')
+	return config
+})
 Vue.config.productionTip = false
 
 
@@ -18,7 +23,7 @@ Vue.filter('flod',function(item){
             return item.context.substr(0, item.context.length - 1);//字符串截取
         } else {
             // 当下收起状态
-          return item.context.substr(0, 100);//字符串截取100个字)
+          return item.context.substr(0, 200);//字符串截取100个字)
 		}
 })
 

@@ -4,7 +4,7 @@ import { Button, Card, Form, Input, FormItem,
 		 Tabs, TabPane, Menu, MenuItem, Submenu,
 		 Avatar, DropdownMenu, DropdownItem, Dropdown,
 		 Dialog, Badge, Table, TableColumn, DatePicker,
-		 Radio, Upload
+		 Radio, Upload, MessageBox
 		}  
  
    from 'element-ui'
@@ -35,3 +35,4 @@ Vue.use(TableColumn)
 Vue.use(DatePicker)
 Vue.use(Radio)
 Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm

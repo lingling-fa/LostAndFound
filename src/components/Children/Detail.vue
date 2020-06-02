@@ -26,8 +26,14 @@
 			<div v-for="(item, index) in answer" :key="index" v-model="answer" class="answer-item">
 				<!-- 用户信息 -->
 				<div class="user">
-					<el-avatar shape="square" :size="50" src="http://m.imeitou.com/uploads/allimg/2019022710/b4jgfd5plcg.jpg" class="HeaderPho " >
-					 </el-avatar>
+					<el-dropdown @command="leaveMsg">
+						<el-avatar shape="square" :size="50" src="http://m.imeitou.com/uploads/allimg/2019022710/b4jgfd5plcg.jpg" class="HeaderPho" >
+						 </el-avatar>
+						<el-dropdown-menu slot="dropdown">
+							<el-dropdown-item  :command="item.userId" >留言</el-dropdown-item>
+						</el-dropdown-menu>
+					</el-dropdown>
+					
 					 <div class="user-info">
 						<div class="user-name">{{item.userName}}</div>
 						<div class="user-desc">{{item.userDescribe}}</div>
@@ -44,6 +50,16 @@
 					<el-button type="primary" icon="el-icon-thumb" plain style="font-size: 14px;" size="mini" > {{item.like}}</el-button>
 			    </div>
 			</div>
+			<el-dialog title="留言板" :visible.sync="leaveDialogVisible" width="40%" center custom-class="chatDialog" >
+				<div id="chatDialogDiv">
+					<el-input type="textarea" :rows="2" placeholder="请输入" v-model="leaveMsgInput">
+					</el-input>
+					<div slot="footer" class="dialog-footer">
+						<el-button @click="leaveDialogVisible = false">取 消</el-button>
+						<el-button type="primary" @click="leaveSend()">确 定</el-button>
+					</div>
+				</div>
+			</el-dialog>
 		</el-card>
 	
 	</div>
@@ -53,6 +69,9 @@
 	export default {
 		data() {
 			return {
+				leaveDialogVisible:false,
+				leaveMsgInput:'',
+				chatId:'',
 				commentList: {
 					id: '0',
 					title: '蒋军成',
@@ -65,6 +84,7 @@
 					{
 						id:'0',
 			            userName:'张三',
+						userId:'13',
 						userDescribe:'计算机学院',
 						context:'退化，你想啥呢，一头成年猪需要五六个成年男性才能按住，这还是需要至少一个专业屠夫，用专业工具勾住下颚，这个时候猪会一直叫，就像你乱叫的时候，老辈人会说你叫的跟杀猪一样，保不齐他们看过怎么杀猪。然后能抓的都给他抓住，四条腿，耳朵， 尾巴，一个不能少，少一个晚上就吃不到肉了。话说家养的猪是真香！',
 						time:'2020-5-20',
@@ -73,6 +93,7 @@
 					{
 						id:'1',
 					    userName:'李四',
+						userId:'14',
 						userDescribe:'机电学院',
 						context:'一般人都混淆了一个基本概念：公立/私立，盈利/非盈利机构。公立非盈利机构，最简单的就是政府。政府的存在不是以赚钱为目的的。但不盈利不代表不花钱，收支平衡即可。公立盈利性机构，最常见就是国企。国企以赚钱为目的，但是赚的钱归国家。私立盈利性机构，就是企业。企业以赚钱为目的，盈利归企业所有人，一般是股东。',
 						time:'2020-5-20',
@@ -81,6 +102,7 @@
 					{
 						id:'2',
 						userName:'王五',
+						userId:'17',
 						userDescribe:'外国语学院',
 						context:'退化，你想啥呢，一头成年猪需要五六个成年男性才能按住，这还是需要至少一个专业屠夫，用专业工具勾住下颚，这个时候猪会一直叫，就像你乱叫的时候，老辈人会说你叫的跟杀猪一样，保不齐他们看过怎么杀猪。然后能抓的都给他抓住，四条腿，耳朵， 尾巴，一个不能少，少一个晚上就吃不到肉了。话说家养的猪是真香！',
 						time:'2020-5-20',
@@ -89,6 +111,18 @@
 				]
 			
 			}
+		},
+		methods:{
+			leaveMsg(command){
+				this.leaveDialogVisible = true;
+				this.chatId = command;
+				console.log(command)
+			},
+			leaveSend(){
+			  var Msg = this.leaveMsgInput;
+			  var Id =this.chatId;
+			  this.$parent.send(Msg,Id)
+			}	
 		}
 	}
 </script>
