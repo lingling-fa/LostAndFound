@@ -30,7 +30,7 @@
 					  :headers="headerObj" 
 					  :on-success="handlePublishSuccess"
 					  :on-remove="handlePublishRemove"
-					  :file-list="fileList"
+					  :limit= 3
 					  list-type="picture">
 					  <el-button size="small" type="primary" style="margin-left: 20px;">上传图片</el-button>
 					</el-upload>
@@ -51,13 +51,14 @@
 				headerObj:{
 					token:window.sessionStorage.getItem('token')
 				},
-				fileList:[],
+				picList:[],
 				addForm: {
 					goods_classify: '',
 					goods_name: '',
 					goods_time: '',
 					goods_address: '',
-					goods_describe: ''
+					goods_describe: '',
+					goods_pic:[]
 				},
 				addFormRules: {
 					goods_classify: {
@@ -90,11 +91,20 @@
 			}
 		},
 		methods:{
-			handlePublishSuccess(){
-				
+			handlePublishSuccess(res){
+				const picInfo = {pics:res.data}
+				this.addForm.goods_pic.push(picInfo)
+				console.log(this.addForm.goods_pic)
 			},
-			handlePublishRemove(){
-				
+			handlePublishRemove(file){
+				// console.log(file)
+				//获取要删除图片的临时路径
+				const filePath = file.response.data
+				//找到表单中对应的索引值
+				const i = this.addForm.goods_pic.findIndex(x => x.pics===filePath)
+				//从表单中删除
+				this.addForm.goods_pic.splice(i,1)
+				console.log(this.addForm.goods_pic)
 			},
 				
 			pulish(){

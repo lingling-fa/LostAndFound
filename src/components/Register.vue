@@ -83,7 +83,7 @@
 					// 		userName:this.registerForm.userName,
 					// 		password:this.registerForm.password
 					// })
-					const res = await this.$http.post('user/register',{
+					const res = await this.$http.post('api/user/register',{
 							userName:this.registerForm.userName,
 							password:this.registerForm.password
 					})

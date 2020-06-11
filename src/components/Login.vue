@@ -28,7 +28,7 @@
 				//登录表单的数据绑定
 				loginForm: {
 					user_name: 'ls',
-					password: '777'
+					password: '777777'
 				},
 				//验证输入是否合法
 				loginFormRules: {
@@ -63,7 +63,7 @@
 			login(){
 				this.$refs.loginFormRef.validate(async valid => {
 					if(!valid) return;
-					const { data:res } = await this.$http.post('user/loginByPassword',this.loginForm);
+					const { data:res } = await this.$http.post('api/user/loginByPassword',this.loginForm);
 					console.log(res)
 					//登录失败后
 					if(res.code !== 1000) return this.$message.error(res.error)
@@ -71,6 +71,12 @@
 					this.$message.success('登录成功!');
 					window.sessionStorage.setItem("token",res.data.token)
 					window.sessionStorage.setItem("user_id",res.data.user_id)
+					window.sessionStorage.setItem("user_name",res.data.user_name)
+					window.sessionStorage.setItem("user_icon",'http://112.74.103.3:80/seek_lost/static/image/user/'+res.data.icon)
+					window.sessionStorage.setItem("nick_name",res.data.nick_name)
+					window.sessionStorage.setItem("sex",res.data.sex)
+					window.sessionStorage.setItem("introduction",res.data.introduction)
+					
 					this.$router.push('/firstPage');
 				})
 			},

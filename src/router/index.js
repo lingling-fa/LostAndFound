@@ -8,6 +8,7 @@ import Detail from '../components/Children/Detail.vue'
 import Setting from '../components/Children/Setting.vue'
 import FirstPage from '../components/Children/FirstPage.vue'
 import NewPage from '../components/Children/NewPage.vue'
+import PersonalHome from'../components/Children/PersonalHome.vue'
 Vue.use(VueRouter)
 
 
@@ -22,16 +23,25 @@ const router = new VueRouter({
 	  {path:'/register',component:Register},
 	  {path:'/home',
 	  component:Home,
+	  redirect:	'/firstpage',
 	  children:[
 	  		{ path:'/firstpage',component:FirstPage},
 	  		{ path:'/pulish',component:Pulish},
-	  		{ path:'/detail',component:Detail},
-			{ path:'/setting',component:Setting},
-			{ path:'/newpage',component:NewPage}
+	  		{ path:'/detail/:id',
+			 name:'Detail',
+			component:Detail},
+			{   name:'Setting',
+				path:'/setting',
+			component:Setting},
+			{ path:'/newpage',component:NewPage},
+			{ path:'/personalhome',
+			name:'Personalhome',
+			component:PersonalHome}
 	  		]
 	  
 	  }
-  ]
+  ],
+  
 })
 
 router.beforeEach((to, from, next)=>{
