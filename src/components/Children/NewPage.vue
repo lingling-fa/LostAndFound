@@ -9,7 +9,7 @@
 					<el-form-item label="文章内容" prop="content">
 						<el-input v-model="addForm.content" class="addFrom-input" type="textarea" style="width: 600px;" :rows="6"></el-input>
 					</el-form-item>
-				<!-- 	<el-form-item label="图片" style="margin-left: 15px;" >
+					<el-form-item label="图片" style="margin-left: 15px;" >
 						<el-upload
 						  class="upload-demo"
 						  :action="uploadURL"
@@ -20,7 +20,7 @@
 						  list-type="picture">
 						  <el-button size="small" type="primary" style="margin-left: 20px;">上传图片</el-button>
 						</el-upload>
-					</el-form-item> -->
+					</el-form-item>
 				</el-form>
 				<el-button type="primary" @click="pulish" style="margin-left: 120px; margin-top: 20px;" >
 					点击发布
@@ -43,7 +43,7 @@
 					title:'',
 					content:'',
 					author_id:window.sessionStorage.getItem('user_id'),
-					// article_pic:[]
+					article_pic:[]
 				},
 				addFormRules: {
 					title: {
@@ -78,15 +78,17 @@
 			},
 			pulish(){
 				this.$refs.addFormRef.validate(async valid => {
-					if(!valid) return;
 					console.log(this.addForm)
-					// const { data:res } = await this.$http.post('api/admin/checkError',{
-					// 	id:"",
-					// 	author_id:this.addForm.author_id,
-					// 	title:this.addForm.title,
-					// 	main:this.addForm.content,
-					//      data:new Date()
-					// });
+					if(!valid) return;
+					var x = {
+						author_id:this.addForm.author_id,
+						title:this.addForm.title,
+						content:this.addForm.content
+					}
+					console.log(x)
+					const { data:res } = await this.$http.post('api/admin/checkError',x);
+					console.log(res)
+					if(res.code!==1000) return this.$message.error(res.message)
 					// const { data:res } = await this.$http.post('article',{
 					// 	// id:"",
 					// 	author_id:this.addForm.author_id,
@@ -98,8 +100,8 @@
 					
 					// console.log(res)
 					this.$message.success("帖子发布成功")
-					this.addForm.title=""
-					this.addForm.content=""
+					// this.addForm.title=""
+					// this.addForm.content=""
 					
 					//登录失败后
 					// if(res.code !== 1000) return this.$message.error(res.error)

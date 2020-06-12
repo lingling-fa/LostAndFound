@@ -16,8 +16,9 @@
 					<img src="../../../public/schoolGate.jpg"/>
 				</div>
 				<div class="card-content" >
-					{{item | flod }}
-					<a class="btn-pick-up" v-show=" item.main.length>= 200" @click.stop="togglePickUp(item)">{{item.isExpand?'收起':'...全文'}}</a>
+				<!-- 	{{item | flod }}
+					<a class="btn-pick-up" v-show=" item.main.length>= 200" @click.stop="togglePickUp(item)">{{item.isExpand?'收起':'...全文'}}</a> -->
+					{{item.main}}
 				</div>
 				</div>
 				</div>
@@ -51,7 +52,8 @@
 				{
 					uid:this.uid
 				}});
-				// console.log(res)
+				// const { data:res } = await this.$http.get('articles');
+				console.log(res)
 				this.commentList=res.data
 				for (var i = 0; i < this.commentList.length; i++) {
 						 this.commentList[i]['isExpand'] = false	

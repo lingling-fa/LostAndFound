@@ -6,15 +6,14 @@
 				<div>{{commentList.context}}</div>
 				<div class="card-footer">
 					<!-- <el-button type="primary" icon="el-icon-thumb" style="font-size: 14px;"> {{commentList.like}}</el-button> -->
-					<span id="commentList-readnum">阅读量：{{commentList.read_number}}</span>
+					<span id="commentList-readnum">阅读量：{{commentList.read_number || 0}}</span>
 					<div class="card-button-box">
-						<el-button class="card-comment-button" icon="el-icon-edit" @click="addDialogVisible = true">写回答</el-button>
-						<!-- <el-button class="card-comment-button" icon="el-icon-s-promotion">转发</el-button> -->
-						<el-button class="card-comment-button" icon="el-icon-star-on">收藏</el-button>
+						<el-button class="card-comment-button" icon="el-icon-edit" @click="commentVisible = true">写回答</el-button>
+						<el-button class="card-comment-button" type="primary" icon="el-icon-star-on" @click="leaveMsg('A.'+commentList.id)">私信</el-button>
 					</div>
 				</div>
 			</div>
-			
+
 		</el-card>
 
 		<el-card style="margin-top: 25px;">
@@ -29,8 +28,7 @@
 						</el-avatar>
 						<el-dropdown-menu slot="dropdown">
 							<el-dropdown-item :command="'A.'+item.user_id">私信</el-dropdown-item>
-							<el-dropdown-item :command="'B.'+item.user_id" 
-							v-if="currentUserRoleNum == 2">管理权限</el-dropdown-item>
+							<el-dropdown-item :command="'B.'+item.user_id" v-if="currentUserRoleNum == 2">管理权限</el-dropdown-item>
 						</el-dropdown-menu>
 					</el-dropdown>
 
@@ -50,9 +48,17 @@
 					<el-button type="primary" icon="el-icon-thumb" plain style="font-size: 14px;" size="mini"> {{item.like_number}}</el-button>
 				</div>
 			</div>
-			<el-dialog title="留言板"
-			   :visible.sync="leaveDialogVisible" 
-			 width="40%" center custom-class="chatDialog">
+			<el-dialog title="写评论" :visible.sync="commentVisible" width="40%" center custom-class="chatDialog">
+				<div id="chatDialogDiv">
+					<el-input type="textarea" :rows="2" placeholder="请输入" v-model="commentInput">
+					</el-input>
+					<div slot="footer" class="dialog-footer">
+						<el-button @click="commentVisible = false">取 消</el-button>
+						<el-button type="primary" @click="commentSend()">确 定</el-button>
+					</div>
+				</div>
+			</el-dialog>
+			<el-dialog title="留言板" :visible.sync="leaveDialogVisible" width="40%" center custom-class="chatDialog">
 				<div id="chatDialogDiv">
 					<el-input type="textarea" :rows="2" placeholder="请输入" v-model="leaveMsgInput">
 					</el-input>
@@ -63,8 +69,7 @@
 				</div>
 			</el-dialog>
 
-			<el-dialog title="权限管理" :visible.sync="changeRoleVisible" width="30%"
-			   style="margin-top: 23vh;"   center>
+			<el-dialog title="权限管理" :visible.sync="changeRoleVisible" width="30%" style="margin-top: 23vh;" center>
 				<div id="changeRoleDiv">
 					<el-radio-group v-model="changeRoleNum">
 						<el-radio :label="3">普通用户</el-radio>
@@ -87,43 +92,73 @@
 	export default {
 		data() {
 			return {
-				PostId:this.$route.params.id,//获取帖子的id
+				PostId: this.$route.params.id, //获取帖子的id
 				changeRoleNum: '',
-				changUserId:'',
+				changUserId: '',
+				commentVisible: false,
 				changeRoleVisible: false,
 				leaveDialogVisible: false,
 				currentUserRoleNum: 2,
 				leaveMsgInput: '',
+				commentInput: '',
 				chatId: '13',
-				commentList:'',
-				answer:[]
-				
+				commentList: '',
+				answer: []
+
 			}
 		},
-		created(){
+		created() {
 			this.getDetails()
 		},
 		methods: {
-			async getDetails(){//获取帖子详情
-				const { data:res } = await this.$http.get('article', {params :
-				{
-					id:this.PostId
-				}});
+			async getDetails() { //获取帖子详情
+				const {
+					data: res
+				} = await this.$http.get('article', {
+					params: {
+						id: this.PostId
+					}
+				});
 				console.log(res)
-				if(res.code!==1000){
+				if (res.code !== 1000) {
 					this.$message.error("该贴有异常")
 					this.$router.back(-1)
 				}
-				this.commentList={
-						id: res.data.author_id,
-						title: res.data.title,
-						context: res.data.content,
-						read_number:res.data.read_number
+				this.commentList = {
+					id: res.data.author_id,
+					title: res.data.title,
+					context: res.data.content,
+					read_number: res.data.read_number
 				}
 				this.answer = res.data.comments
+				for (var i = 0; i < this.answer.length; i++) {
+					if(this.answer[i].user_id === 13){
+						this.answer[i]['userName']="ls"
+						this.answer[i]['userDescribe']="哥只是一个传说"	
+					}
+					if(this.answer[i].user_id === 14){
+						this.answer[i]['userName']="ww"
+						this.answer[i]['userDescribe']="这个人很懒，什么也没留下"	
+					}
+					if(this.answer[i].user_id === 16){
+						this.answer[i]['userName']="zhangsan"
+						this.answer[i]['userDescribe']="我是三三三"	
+					}
+					if(this.answer[i].user_id === 17){
+						this.answer[i]['userName']="lisi"
+						this.answer[i]['userDescribe']="我是老四啊"	
+					}
+				}
+			},
+			async commentSend() {
+
+				const {
+					data: res
+				} = await this.$http.post('comment', {
+					id: this.PostId
+				});
 			},
 			leaveMsg(command) {
-				// console.log(command)
 				var arr = command.split(".")
 				// console.log(arr)
 				if (arr[0] === "A") {
@@ -132,12 +167,9 @@
 				}
 				if (arr[0] === "B") {
 					//调用更新权限的接口
-					this.changUserId =  arr[1]
+					this.changUserId = arr[1]
 					this.showRoleDialog(arr[1])
 				}
-				// this.leaveDialogVisible = true;
-				// this.chatId = command;
-				// console.log(command)
 			},
 			leaveSend() {
 				var Msg = this.leaveMsgInput;
@@ -146,52 +178,43 @@
 				// console.log(Id)
 				this.$parent.send(Msg, Id)
 				this.leaveMsgInput = "";
-				
+
 			},
 			async showRoleDialog(userId) {
-				const { data:res } = await this.$http.post('api/admin/selectRoleIdByUserId',
-				{
-					    user_id:userId,	//查看用户的id	
+				const {
+					data: res
+				} = await this.$http.post('api/admin/selectRoleIdByUserId', {
+					user_id: userId, //查看用户的id	
 				});
 				console.log(res.data)
-				if( res.data !== 3){
+				if (res.data !== 3) {
 					return this.$message.error("对方也是管理员，您无法管理他的权限")
 				}
-				// const { data:res } = await this.$http.post('api/admin/updateUserRole',{
-				// 		user_id:userId,
-				// 		role_id:3,
-				// });
-				// console.log(res)
-				// const currentUserRoleNum = 2 //登录用户的权限
-				// const res = 3
-				// if( currentUserRoleNum !== 2){
-				// 	return this.$message.error("您并不是超级管理员，无法管理他的权限")
-				// }
-				// if( res === 2){
-				// 	return this.$message.error("对方也是超级管理员，您无法管理他的权限")
-				// }
+
 				this.changeRoleNum = res.data;
 				this.changeRoleVisible = true;
 			},
-			updataRoleNum(){
+			updataRoleNum() {
 				var roleName
-				if(this.changeRoleNum === 1) roleName = "管理员"
-				if(this.changeRoleNum === 3) roleName = "普通用户"
-				this.$confirm("确认修改为"+roleName+"?")
-					.then(_ =>{
-						
-						this.updataRoleInterface(this.changUserId,this.changeRoleNum)
+				if (this.changeRoleNum === 1) roleName = "管理员"
+				if (this.changeRoleNum === 3) roleName = "普通用户"
+				this.$confirm("确认修改为" + roleName + "?")
+					.then(_ => {
+
+						this.updataRoleInterface(this.changUserId, this.changeRoleNum)
 						this.changeRoleVisible = false;
 						done();
 					})
 					.catch(_ => {});
 			},
-			async updataRoleInterface(id,num){
-				const { data:res } = await this.$http.post('api/admin/updateUserRole',{
-						user_id:id,
-						role_id:num
+			async updataRoleInterface(id, num) {
+				const {
+					data: res
+				} = await this.$http.post('api/admin/updateUserRole', {
+					user_id: id,
+					role_id: num
 				});
-				if( res.code !== 1000){
+				if (res.code !== 1000) {
 					return this.$message.error(res.message)
 				}
 				this.$message.success("设置成功！")
@@ -201,11 +224,12 @@
 </script>
 
 <style scoped lang="less">
-	#detail /deep/ #commentList-readnum{
-		color:#8590a6;
+	#detail /deep/ #commentList-readnum {
+		color: #8590a6;
 		font-size: 14px;
 		margin-top: 15px;
 	}
+
 	#detail /deep/ .answer-header {
 		font-weight: bold;
 	}
@@ -230,7 +254,7 @@
 	}
 
 	#detail /deep/ .user-desc {
-		/* font-size: 12px; */
+		 font-size: 12px; 
 		color: #646464;
 	}
 
@@ -238,10 +262,12 @@
 		border-bottom: 1px solid #dcdfe6;
 		;
 	}
+
 	#detail /deep/ .card-footer {
 		display: flex;
 		padding-top: 20px;
 	}
+
 	#detail /deep/ .answer-time {
 		color: #8590a6;
 		font-size: 14px;
@@ -252,9 +278,11 @@
 		margin-top: 10px;
 		margin-bottom: 15px;
 	}
+
 	#detail /deep/ .card-button-box {
 		margin-left: auto;
 		display: inline-block;
 	}
+
 	#detail /deep/ .answer-content {}
 </style>

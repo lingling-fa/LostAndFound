@@ -18,12 +18,13 @@ Vue.config.productionTip = false
 
 Vue.filter('flod',function(item){
 	if(!item) return;
+	 if(item.content === null) return;
 	if (item.isExpand) {
           //当下全文状态
-            return item.main.substr(0, item.main.length - 1);//字符串截取
+            return item.content.substr(0, item.content.length - 1);//字符串截取
         } else {
             // 当下收起状态
-          return item.main.substr(0, 200);//字符串截取100个字)
+          return item.content.substr(0, 200);//字符串截取100个字)
 		  
 		}
 })

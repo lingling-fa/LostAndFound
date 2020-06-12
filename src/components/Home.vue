@@ -108,8 +108,6 @@
 			      this.userImg = url
 			    },
 			handleCommand(command) {
-				// this.$message('click on item ' + command);
-					// this.activeIndex = '/' + 'pulish';
 				if (command === "a") {
 					this.$router.push({
 						name: 'Personalhome'
@@ -127,7 +125,6 @@
 						path: '/login'
 					})
 				}
-				// this.activeIndex = '/' + 'pulish'
 			},
 			chatCommand(command) {
 				this.chatObject = command;
@@ -140,6 +137,8 @@
 				if (name === this.currentUserName) { //是自己发的消息
 				for (let i = 0; i < this.allChatInfo.length; i++) {
 					if (receiverId === this.allChatInfo[i].id) {
+						this.currentChatInfo = this.allChatInfo[i].talkInfo
+						this.currentChatId = this.allChatInfo[i].id
 						this.currentChatNum = i
 					   return //是实时聊天，什么操作都不用
 					}
@@ -152,8 +151,6 @@
 					if (name === this.allChatInfo[i].name) {
 						this.currentChatInfo = this.allChatInfo[i].talkInfo
 						this.currentChatId = this.allChatInfo[i].id
-						// this.no_receive_num -= this.allChatInfo[i].no_receive_num //未读消息减少					  
-						// this.allChatInfo[i].no_receive_num = 0
 						this.currentChatNum = i
 						findFlag = true;
 					}
@@ -167,7 +164,9 @@
 				for (var i = 0; i < this.currentChatInfo.length; i++) {
 					arr.push(this.currentChatInfo[i].ws_msg_id)
 				}
-
+				
+				const { data:res } = await this.$http.post('api/wsMsg/updateMsgStatus',arr);
+				console.log(res)
 				this.no_receive_num -= this.allChatInfo[this.currentChatNum].no_receive_num //未读消息减少
 				this.allChatInfo[this.currentChatNum].no_receive_num = 0
 				this.chatDialogVisible = false
@@ -251,7 +250,6 @@
 				} catch (error) {
 					this.$message.error(error)
 				}
-				// console.log(this.allChatInfo)
 			},
 			send: function(Msg, ChatId) {
 				if (typeof(Msg) == "undefined") {
